@@ -18,7 +18,7 @@ contract NftStake is IERC721Receiver, ReentrancyGuard {
     address public constant collectionAddress = 0x31A28edaf8b71483e0944a7597E5FEfF710A6152;
     address public daoAdmin;
     uint256 public tokensPerBlock;
-    bool    public canHarvest = false;
+    bool    public canClaim = false;
 
     struct stake {
         uint256 tokenId;
@@ -34,7 +34,6 @@ contract NftStake is IERC721Receiver, ReentrancyGuard {
 
     uint256[] public _allTokens;
     mapping(uint256 => uint256) public _allTokensIndex;
-    mapping(address => uint256) public toClaim;
 
     mapping(address => mapping(uint256 => uint256)) public _ownedTokens;
     mapping(uint256 => uint256) public _ownedTokensIndex;
@@ -62,7 +61,7 @@ contract NftStake is IERC721Receiver, ReentrancyGuard {
         // require that some time has elapsed (IE you can not stake and unstake in the same block)
         require(
             receipt[tokenId].stakedFromBlock < block.number,
-            "requireTimeElapsed: Can not stake/unStake/harvest in same block"
+            "requireTimeElapsed: Can not stake/unStake/claim in same block"
         );
         _;
     }
@@ -220,8 +219,8 @@ contract NftStake is IERC721Receiver, ReentrancyGuard {
         numberOfStaked--;
     }
 
-    function harvest(uint256 tokenId) external {
-        require(canHarvest == true, "You cannot harvest yet!");
+    function claimRewards(uint256 tokenId) external {
+        require(canClaim == true, "You cannot claim yet!");
         // This 'payout first' should be safe as the function is nonReentrant
         _payoutStake(tokenId);
 
@@ -240,12 +239,12 @@ contract NftStake is IERC721Receiver, ReentrancyGuard {
         erc20Token.transfer(daoAdmin, erc20Token.balanceOf(address(this)));
     }
 
-    function setCanHarvest(bool _state) public onlyDao {
-    canHarvest = _state;
+    function setCanClaim(bool _state) public onlyDao {
+    canClaim = _state;
     }
 
-      function ucanharvest() public view returns(bool) {
-    return canHarvest;
+      function userCanClaim() public view returns(bool) {
+    return canClaim;
     }
 
     function _stakeNFT(uint256 tokenId) internal returns (bool) {

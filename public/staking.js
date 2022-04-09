@@ -9,33 +9,22 @@ const supportedNetworks = {
 const currentNetwork = supportedNetworks.Rinkeby;
 
 const config = {
-    contractAddress: '0x7dda31f789567D25304c1F4028DB7D68cC86e27B',
+    contractAddress: '0x6aA4c8Ad6dBd00C6341C855097706d7acA37B74e',
     networkName: currentNetwork.Name,
-    etherScanUrl: 'https://polygonscan.com/tx/',
+    etherScanUrl: 'https://rinkeby.etherscan.io/tx/',
     openSeaUrl: 'https://opensea.io/account',
     networkParams: {
         chainId: window.ethers.utils.hexValue(currentNetwork.ChainId)
     },
     contractABI: [
-        //"function claim() external",
-        //"function getRewardAmount(address targetAddress) external view returns(uint256)",
-        //"function stakeToken(uint256 []calldata tokenIds) external",
-        //"function getStaked(address targetAddress) external view returns (string[] memory, uint256[] memory)",
-        //"function unstake(uint256 []calldata tokenIds) external",
-        //"function canClaim(address targetAddress) public view returns(bool)",
-        //"function collectionAddress() public view returns(address)",
-       // "function tokenURIs(address targetAddress) public view returns(string[] memory, uint256[] memory)",
-
        "function nftToken() public view returns(address)",
        "function getStaked(address targetAddress) external view returns (string[] memory, uint256[] memory)",
        "function stakeNFT(uint256[] calldata tokenId) public returns (bool)",
        "function tokenURIs(address targetAddress) public view returns(string[] memory, uint256[] memory)",
-       "function canClaim(address targetAddress) public view returns(bool)",
-       "function claim() external",
        "function unStakeNFT(uint256[] calldata tokenId) public nonReentrant returns (bool)",
-       "function harvest(uint256 tokenId) external",
+       "function claimRewards(uint256 tokenId) external",
        "function getCurrentStakeEarned(uint256 tokenId) public view returns (uint256)",
-       "function ucanharvest() public view returns(bool)",
+       "function userCanClaim() public view returns(bool)",
     ]
 };
 
@@ -237,7 +226,7 @@ async function init() {
 
     let claimBtn = document.getElementById("claimBtn");
     claimBtn.addEventListener("click", async function() {
-        await stakeTransaction(showStaked, showStakable, "unstaked", "harvest");
+        await stakeTransaction(showStaked, showStakable, "unstaked", "claimRewards");
         $("#unstakeBtn").attr("disabled", true);
         
     }); 
@@ -291,13 +280,13 @@ $(document).ready(function() {
 
         }
 
-        let canHarvest = await contract.ucanharvest();
-        if (canHarvest == false) {
+        let userCanClaim = await contract.userCanClaim();
+        if (userCanClaim == false) {
             $("#claimBtn").attr("disabled", true);
             $("#claimBtn").remove()
-            console.log("CanHarvest", canHarvest);
+            console.log("CanClaim", userCanClaim);
         } else {
-            console.log("CanHarvest", canHarvest);
+            console.log("CanClaim", userCanClaim);
             $('body').on('click','#showStaked .bktibx', function(){
 
                 if ($(this).hasClass('staked')) {
