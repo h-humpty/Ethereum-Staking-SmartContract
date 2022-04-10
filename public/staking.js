@@ -9,7 +9,7 @@ const supportedNetworks = {
 const currentNetwork = supportedNetworks.Rinkeby;
 
 const config = {
-    contractAddress: '0x6aA4c8Ad6dBd00C6341C855097706d7acA37B74e',
+    contractAddress: '0x517B5b86Ce63920B793c02ff9EAe737D6922CFC4',
     networkName: currentNetwork.Name,
     etherScanUrl: 'https://rinkeby.etherscan.io/tx/',
     openSeaUrl: 'https://opensea.io/account',
@@ -23,8 +23,9 @@ const config = {
        "function tokenURIs(address targetAddress) public view returns(string[] memory, uint256[] memory)",
        "function unStakeNFT(uint256[] calldata tokenId) public nonReentrant returns (bool)",
        "function claimRewards(uint256 tokenId) external",
-       "function getCurrentStakeEarned(uint256 tokenId) public view returns (uint256)",
        "function userCanClaim() public view returns(bool)",
+       "function getCurrentStakeEarned(uint256 tokenId) public view returns (uint256)",
+       "function getCurrentTotalStakeEarned(address targetAddress) external view returns (uint256)",
     ]
 };
 
@@ -189,6 +190,9 @@ async function init() {
         createTokenImage(tokenURI, getTokenUris[1][i], showStakable, i, "unstaked")
     });
 
+    let getTotalreward = document.getElementById("claimAmmount");
+    let getTotalEarn = (await contract.getCurrentTotalStakeEarned(window.ethereum.selectedAddress));
+    getTotalreward.innerHTML = `Total Token Rewards = ` + ethers.utils.formatUnits(getTotalEarn);
 
     console.log("GOT AVAILABLE TOKENS");
     let getStaked = (await contract.getStaked(window.ethereum.selectedAddress));
@@ -196,7 +200,7 @@ async function init() {
         createTokenImage(tokenURI, getStaked[1][i], showStaked, i, "staked");
     });
     console.log("GOT STAKED");
-    let stakeBtn = document.getElementById("stakeBtn");
+
 
     async function stakeTransaction(fromElement, toElement, className, transactionFuncName) {
         let tokens = [];
@@ -211,6 +215,8 @@ async function init() {
             });
         }
     }
+
+    let stakeBtn = document.getElementById("stakeBtn");
     stakeBtn.addEventListener("click", async function() {
         await stakeTransaction(showStakable, showStaked, "staked", "stakeNFT");
         //scroll not working here
@@ -227,7 +233,7 @@ async function init() {
     let claimBtn = document.getElementById("claimBtn");
     claimBtn.addEventListener("click", async function() {
         await stakeTransaction(showStaked, showStakable, "unstaked", "claimRewards");
-        $("#unstakeBtn").attr("disabled", true);
+        $("#claimBtn").attr("disabled", true);
         
     }); 
 
@@ -279,7 +285,7 @@ $(document).ready(function() {
             }
 
         }
-
+        
         let userCanClaim = await contract.userCanClaim();
         if (userCanClaim == false) {
             $("#claimBtn").attr("disabled", true);

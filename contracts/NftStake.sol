@@ -112,6 +112,20 @@ contract NftStake is IERC721Receiver, ReentrancyGuard {
         return erc20Token.balanceOf(address(this));
     }
 
+    //Call Total Stake earn for TargetAddress
+    function getCurrentTotalStakeEarned(address targetAddress) external view returns (uint256) {
+        uint256 [] memory tokenIds = new uint256[](_balances[targetAddress]); 
+        uint256 [] memory tokenRewards = new uint256[](_balances[targetAddress]); 
+        uint256 result;
+        for(uint256 i = 0; i < _balances[targetAddress]; i++){
+            tokenIds[i] = _ownedTokens[targetAddress][i];
+            tokenRewards[i] = _getTimeStaked(tokenIds[i]).mul(tokensPerBlock);
+            result += tokenRewards[i];
+        }
+        return (result);
+    }
+
+    //Call Stake earn of every token owned for TargetAddress
     function getCurrentStakeEarned(uint256 tokenId) public view returns (uint256) {
         return _getTimeStaked(tokenId).mul(tokensPerBlock);
     }
@@ -219,6 +233,7 @@ contract NftStake is IERC721Receiver, ReentrancyGuard {
         numberOfStaked--;
     }
 
+    //Allows you to claim rewards, but canClaim must be true
     function claimRewards(uint256 tokenId) external {
         require(canClaim == true, "You cannot claim yet!");
         // This 'payout first' should be safe as the function is nonReentrant

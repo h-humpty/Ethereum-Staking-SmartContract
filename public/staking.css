@@ -2,7 +2,7 @@
 
 body {
     font-family: 'Ubuntu', sans-serif;
-    background-color: #fff;
+    background-color: #934040;
 }
 
 .scrollableContent {
@@ -35,7 +35,7 @@ body {
 }
 
 .bktibx {
-    background: #edc7b6;
+    background: #a3977c;
     padding: 10px;
     border-radius: 10px;
     width: 200px;
@@ -86,11 +86,13 @@ img {
 #showStakable .bktibx.staked,
 #showStaked .bktibx.unstaked {
     outline: 3px solid #a3977c;
+    box-shadow: 0px 0px 5px 5px #3d3836;
+
 }
 
 #showStakable .bktibx.unstaked,
 #showStaked .bktibx.staked {
-    outline: 3px solid #edc7b6;
+    outline: 3px solid #9b6b5e;
 }
 
 .contentBtn {
@@ -308,7 +310,7 @@ footer {
 }
 
 .navbar {
-    background-color: #4c422a;
+    background-color: #986b5d;
 }
 
 .navbar-nav .nav-link {
