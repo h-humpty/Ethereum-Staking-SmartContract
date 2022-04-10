@@ -189,7 +189,9 @@
                 $("#stakeBtn").attr("disabled", true);
             }
 
-            if($('#showStakable .bktibx').children().length == 0) {
+            if($('#showStakable .bktibx.staked').children().length > 0) {
+                $("#stakeBtn").attr("disabled", false);
+            } else {
                 $("#stakeBtn").attr("disabled", true);
             }
         });
@@ -197,11 +199,17 @@
         $('body').on('click','#showStaked .bktibx', function(){
 
             if ($(this).hasClass('staked')) {
-                $("#unstakeBtn").attr("disabled", true);
+                $("#unstakeBtn").attr("disabled", false);
             }
 
             else {
+                $("#unstakeBtn").attr("disabled", true);
+            }
+
+            if($('#showStaked .bktibx.unstaked').children().length > 0) {
                 $("#unstakeBtn").attr("disabled", false);
+            } else {
+                $("#unstakeBtn").attr("disabled", true);
             }
         });
 
