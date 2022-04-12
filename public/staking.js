@@ -1,15 +1,27 @@
 let contract = null;
 const supportedNetworks = {
-    Polygon: { Name: 'Polygon Mainnet', ChainId: 137},
-    Mumbai: {Name: 'Mumbai', ChainId: 80001},
-    Eth: { Name: 'Ethereum Mainnet', ChainId: 1},
-    Rinkeby: { Name: 'Rinkeby', ChainId: 4},
+    Polygon: {
+        Name: 'Polygon Mainnet',
+        ChainId: 137
+    },
+    Mumbai: {
+        Name: 'Mumbai',
+        ChainId: 80001
+    },
+    Eth: {
+        Name: 'Ethereum Mainnet',
+        ChainId: 1
+    },
+    Rinkeby: {
+        Name: 'Rinkeby',
+        ChainId: 4
+    },
 }
 
 const currentNetwork = supportedNetworks.Rinkeby;
 
 const config = {
-    contractAddress: '0x517B5b86Ce63920B793c02ff9EAe737D6922CFC4',
+    contractAddress: '0xBD1150f87EBA437f4917c64548F8fBd742CCE3ec',
     networkName: currentNetwork.Name,
     etherScanUrl: 'https://rinkeby.etherscan.io/tx/',
     openSeaUrl: 'https://opensea.io/account',
@@ -17,15 +29,15 @@ const config = {
         chainId: window.ethers.utils.hexValue(currentNetwork.ChainId)
     },
     contractABI: [
-       "function nftToken() public view returns(address)",
-       "function getStaked(address targetAddress) external view returns (string[] memory, uint256[] memory)",
-       "function stakeNFT(uint256[] calldata tokenId) public returns (bool)",
-       "function tokenURIs(address targetAddress) public view returns(string[] memory, uint256[] memory)",
-       "function unStakeNFT(uint256[] calldata tokenId) public nonReentrant returns (bool)",
-       "function claimRewards(uint256 tokenId) external",
-       "function userCanClaim() public view returns(bool)",
-       "function getCurrentStakeEarned(uint256 tokenId) public view returns (uint256)",
-       "function getCurrentTotalStakeEarned(address targetAddress) external view returns (uint256)",
+        "function nftToken() public view returns(address)",
+        "function getStaked(address targetAddress) external view returns (string[] memory, uint256[] memory)",
+        "function stakeNFT(uint256[] calldata tokenId) public returns (bool)",
+        "function tokenURIs(address targetAddress) public view returns(string[] memory, uint256[] memory)",
+        "function unStakeNFT(uint256[] calldata tokenId) public nonReentrant returns (bool)",
+        "function claimRewards(uint256 tokenId) external",
+        "function userCanClaim() public view returns(bool)",
+        "function getCurrentStakeEarned(uint256 tokenId) public view returns (uint256)",
+        "function getCurrentTotalStakeEarned(address targetAddress) external view returns (uint256)",
     ]
 };
 
@@ -95,7 +107,9 @@ async function sendTransaction(data, transactionFuncName, contractABI, contractA
     }
 }
 
-async function verifyWalletConnection({ noAlert } = {}) {
+async function verifyWalletConnection({
+    noAlert
+} = {}) {
     if (!window.ethereum) {
         displayError('Please install MetaMask to interact with this feature');
         return;
@@ -110,9 +124,13 @@ async function verifyWalletConnection({ noAlert } = {}) {
     try {
         await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
-            params: [{ chainId: config.networkParams.chainId }], // chainId must be in hexadecimal numbers
+            params: [{
+                chainId: config.networkParams.chainId
+            }], // chainId must be in hexadecimal numbers
         });
-        accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        accounts = await window.ethereum.request({
+            method: 'eth_requestAccounts'
+        });
 
         if (window.ethereum.chainId != config.networkParams.chainId) {
             alert(`Please switch MetaMask network to ${config.networkName}`);
@@ -125,10 +143,10 @@ async function verifyWalletConnection({ noAlert } = {}) {
         } else if (error.code == 4001) {
             alert('Please connect with MetaMask');
             return;
-        } else if (error.code == 4902){
+        } else if (error.code == 4902) {
             alert('Unrecognized network, please check metmask and try again');
             return;
-        }else {
+        } else {
             throw error;
         }
     }
@@ -167,7 +185,7 @@ async function init() {
         parrentDiv.setAttribute("dataId", dataId);
         parrentDiv.appendChild(img);
         root.appendChild(parrentDiv)
-        parrentDiv.addEventListener("click", function() {
+        parrentDiv.addEventListener("click", function () {
             if (parrentDiv.classList.contains("unstaked")) {
                 parrentDiv.classList.remove("unstaked");
                 parrentDiv.classList.add("staked");
@@ -217,25 +235,25 @@ async function init() {
     }
 
     let stakeBtn = document.getElementById("stakeBtn");
-    stakeBtn.addEventListener("click", async function() {
+    stakeBtn.addEventListener("click", async function () {
         await stakeTransaction(showStakable, showStaked, "staked", "stakeNFT");
         //scroll not working here
         $("#stakeBtn").attr("disabled", true);
     });
     let unstakeBtn = document.getElementById("unstakeBtn");
-    unstakeBtn.addEventListener("click", async function() {
+    unstakeBtn.addEventListener("click", async function () {
         await stakeTransaction(showStaked, showStakable, "unstaked", "unStakeNFT");
         $("#unstakeBtn").attr("disabled", true);
-        
-    }); 
+
+    });
 
 
     let claimBtn = document.getElementById("claimBtn");
-    claimBtn.addEventListener("click", async function() {
+    claimBtn.addEventListener("click", async function () {
         await stakeTransaction(showStaked, showStakable, "unstaked", "claimRewards");
         $("#claimBtn").attr("disabled", true);
-        
-    }); 
+
+    });
 
     console.log("CLAIM CHECKED");
     console.log("UPDATED claim ammount");
@@ -243,30 +261,28 @@ async function init() {
     document.getElementById("content").classList.remove("hidden");
     Array.from(document.getElementsByClassName("tslshow")).forEach((view) => {
         console.log(view)
-        $(view).slick(
-            {
-                dots: false,
-                infinite: false,
-                speed: 300,
-                slidesToShow: 4,
-                slidesToScroll: 1,
-                arrows: true,
-                prevArrow: "<button type='button' class='slick-prev pull-left'><i class='fa fa-angle-left' aria-hidden='true'></i></button>",
-                nextArrow: "<button type='button' class='slick-next pull-right'><i class='fa fa-angle-right' aria-hidden='true'></i></button>",
-            }
-        );
+        $(view).slick({
+            dots: false,
+            infinite: false,
+            speed: 300,
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            arrows: true,
+            prevArrow: "<button type='button' class='slick-prev pull-left'><i class='fa fa-angle-left' aria-hidden='true'></i></button>",
+            nextArrow: "<button type='button' class='slick-next pull-right'><i class='fa fa-angle-right' aria-hidden='true'></i></button>",
+        });
     });
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
     let modal = document.createElement("div");
     modal.innerHTML = `<div class="nft-modal">
         <div class="nft-modal-overlay nft-js-modal-overlay"></div>
         <div class="nft-modal-container"></div>
     </div>`
     document.body.appendChild(modal);
-        
-    document.getElementById("checkWalletConnection").addEventListener("click", async() => {
+
+    document.getElementById("checkWalletConnection").addEventListener("click", async () => {
         if (await verifyWalletConnection()) {
             document.getElementById("checkWalletConnection").remove();
             let approveBtn = document.getElementById("approveBtn");
@@ -276,7 +292,7 @@ $(document).ready(function() {
                 await init();
             } else {
                 approveBtn.classList.remove("hidden");
-                approveBtn.addEventListener("click", async() => {
+                approveBtn.addEventListener("click", async () => {
                     if (await isApprovedForAll()) {
                         approveBtn.remove();
                         await init();
@@ -285,24 +301,47 @@ $(document).ready(function() {
             }
 
         }
-        
+
+        let selectShowStaked = $('#showStaked .bktibx');
+        let selectshowStakable = $('#showStakable .bktibx');
+        if (selectShowStaked.children().length == 1) {
+            selectShowStaked.css("min-width", "184px");
+            $(".slick-track").css("min-width", "228px");
+        } else if (selectShowStaked.children().length == 2) {
+            selectShowStaked.css("min-width", "184px");
+            $(".slick-track").css("min-width", "486px");
+        } else if (selectShowStaked.children().length == 3) {
+            selectShowStaked.css("min-width", "184px");
+            $(".slick-track").css("min-width", "683px");
+        }
+
+        if (selectshowStakable.children().length == 1) {
+            selectshowStakable.css("min-width", "184px");
+            $(".slick-track").css("min-width", "228px");
+        } else if (selectshowStakable.children().length == 2) {
+            selectshowStakable.css("min-width", "184px");
+            $(".slick-track").css("min-width", "486px");
+        } else if (selectshowStakable.children().length == 3) {
+            selectshowStakable.css("min-width", "184px");
+            $(".slick-track").css("min-width", "683px");
+        }
+
+
+
         let userCanClaim = await contract.userCanClaim();
         if (userCanClaim == false) {
             $("#claimBtn").attr("disabled", true);
-            $("#claimBtn").remove()
             console.log("CanClaim", userCanClaim);
         } else {
             console.log("CanClaim", userCanClaim);
-            $('body').on('click','#showStaked .bktibx', function(){
+            $('body').on('click', '#showStaked .bktibx', function () {
 
                 if ($(this).hasClass('staked')) {
                     $("#claimBtn").attr("disabled", true);
-                }
-                
-                else {
+                } else {
                     $("#claimBtn").attr("disabled", false);
                 }
-                });
+            });
         }
     });
 });
