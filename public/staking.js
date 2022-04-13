@@ -306,24 +306,24 @@ $(document).ready(function () {
         let selectshowStakable = $('#showStakable .bktibx');
         if (selectShowStaked.children().length == 1) {
             selectShowStaked.css("min-width", "184px");
-            $(".slick-track").css("min-width", "228px");
+            $("#showStaked .slick-list .slick-track").css("min-width", "228px");
         } else if (selectShowStaked.children().length == 2) {
             selectShowStaked.css("min-width", "184px");
-            $(".slick-track").css("min-width", "486px");
+            $("#showStaked .slick-list .slick-track").css("min-width", "486px");
         } else if (selectShowStaked.children().length == 3) {
             selectShowStaked.css("min-width", "184px");
-            $(".slick-track").css("min-width", "683px");
+            $("#showStaked .slick-list .slick-track").css("min-width", "683px");
         }
 
         if (selectshowStakable.children().length == 1) {
             selectshowStakable.css("min-width", "184px");
-            $(".slick-track").css("min-width", "228px");
+            $("#showStakable .slick-list .slick-track").css("min-width", "228px");
         } else if (selectshowStakable.children().length == 2) {
             selectshowStakable.css("min-width", "184px");
-            $(".slick-track").css("min-width", "486px");
+            $("#showStakable .slick-list .slick-track").css("min-width", "486px");
         } else if (selectshowStakable.children().length == 3) {
             selectshowStakable.css("min-width", "184px");
-            $(".slick-track").css("min-width", "683px");
+            $("#showStakable .slick-list .slick-track").css("min-width", "683px");
         }
 
 
